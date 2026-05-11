@@ -19,3 +19,6 @@ env/
 
 # 系统文件
 .DS_Store
+
+# 本地规范/实验目录
+openspec/
