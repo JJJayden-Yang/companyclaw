@@ -1,0 +1,21 @@
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# 本地环境变量
+.env
+.env.*
+
+# 测试与类型缓存
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 系统文件
+.DS_Store
