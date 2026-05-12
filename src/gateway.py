@@ -4,12 +4,12 @@ from typing import Any
 
 try:
     from .channel import InboundMessage, ChannelManager, TelegramChannel, print_assistant, print_channel, print_info
-    from .memory import SessionMemory
+    from .memory import SessionMemory, UserProfileMemory
     from .skills_runtime import SkillStore, build_system_prompt
     from .voice_pipeline import VoicePipeline
 except ImportError:
     from channel import InboundMessage, ChannelManager, TelegramChannel, print_assistant, print_channel, print_info
-    from memory import SessionMemory
+    from memory import SessionMemory, UserProfileMemory
     from skills_runtime import SkillStore, build_system_prompt
     from voice_pipeline import VoicePipeline
 
@@ -31,6 +31,7 @@ class AgentGateway:
         self.max_tool_output = max_tool_output
         self.skill_store = SkillStore(skills_dir)
         self.voice_pipeline = VoicePipeline(workdir)
+        self.user_profile = UserProfileMemory(workdir / "USER_PROFILE.md")
         self.tools = self._build_tools()
         self.tool_handlers = self._build_tool_handlers()
 
@@ -141,6 +142,10 @@ class AgentGateway:
         self.print_tool("load_skill", name)
         return self.skill_store.load(name.strip())
 
+    def tool_append_user_note(self, note: str) -> str:
+        self.print_tool("append_user_note", note[:80])
+        return self.user_profile.append_note(note)
+
     def _build_tools(self) -> list[dict]:
         return [
             {"name": "bash", "description": "Run a shell command and return its output.",
@@ -157,6 +162,8 @@ class AgentGateway:
              "input_schema": {"type": "object", "properties": {}, "required": []}},
             {"name": "load_skill", "description": "Load a skill body by name from ~/skills.",
              "input_schema": {"type": "object", "properties": {"name": {"type": "string"}}, "required": ["name"]}},
+            {"name": "append_user_note", "description": "Append one durable observation to ~/.companyclaw/USER_PROFILE.md.",
+             "input_schema": {"type": "object", "properties": {"note": {"type": "string"}}, "required": ["note"]}},
         ]
 
     def _build_tool_handlers(self) -> dict[str, Any]:
@@ -168,6 +175,7 @@ class AgentGateway:
             "list_skills": lambda **_: self.tool_list_skills(),
             "reload_skills": lambda **_: self.tool_reload_skills(),
             "load_skill": self.tool_load_skill,
+            "append_user_note": self.tool_append_user_note,
         }
 
     def process_tool_call(self, tool_name: str, tool_input: dict) -> str:
