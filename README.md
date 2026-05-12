@@ -34,6 +34,7 @@
 pip install anthropic python-dotenv
 pip install httpx        # 如果要接 Telegram / 飞书
 pip install pyyaml       # 如果 skills frontmatter 需要完整 YAML 解析
+pip install faster-whisper  # 如果要本机语音转文字
 ```
 
 ## 环境变量
@@ -55,6 +56,13 @@ FEISHU_APP_SECRET=
 FEISHU_ENCRYPT_KEY=
 FEISHU_BOT_OPEN_ID=
 FEISHU_IS_LARK=false
+
+# 语音转文字可选，默认走本机 faster-whisper
+VOICE_STT_BACKEND=local
+VOICE_LOCAL_MODEL=small
+VOICE_LOCAL_DEVICE=auto
+VOICE_LOCAL_COMPUTE_TYPE=int8
+VOICE_STT_LANGUAGE=zh
 ```
 
 ## 启动方式
