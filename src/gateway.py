@@ -146,6 +146,10 @@ class AgentGateway:
         self.print_tool("append_user_note", note[:80])
         return self.user_profile.append_note(note)
 
+    def tool_update_soul(self, note: str) -> str:
+        self.print_tool("update_soul", note[:80])
+        return self.user_profile.append_note(note)
+
     def _build_tools(self) -> list[dict]:
         return [
             {"name": "bash", "description": "Run a shell command and return its output.",
@@ -164,6 +168,8 @@ class AgentGateway:
              "input_schema": {"type": "object", "properties": {"name": {"type": "string"}}, "required": ["name"]}},
             {"name": "append_user_note", "description": "Append one durable observation to ~/.companyclaw/USER_PROFILE.md.",
              "input_schema": {"type": "object", "properties": {"note": {"type": "string"}}, "required": ["note"]}},
+            {"name": "update_soul", "description": "Alias of append_user_note for older agent prompts.",
+             "input_schema": {"type": "object", "properties": {"note": {"type": "string"}}, "required": ["note"]}},
         ]
 
     def _build_tool_handlers(self) -> dict[str, Any]:
@@ -176,6 +182,7 @@ class AgentGateway:
             "reload_skills": lambda **_: self.tool_reload_skills(),
             "load_skill": self.tool_load_skill,
             "append_user_note": self.tool_append_user_note,
+            "update_soul": self.tool_update_soul,
         }
 
     def process_tool_call(self, tool_name: str, tool_input: dict) -> str:
