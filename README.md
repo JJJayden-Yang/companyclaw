@@ -35,6 +35,7 @@ pip install anthropic python-dotenv
 pip install httpx        # 如果要接 Telegram / 飞书
 pip install pyyaml       # 如果 skills frontmatter 需要完整 YAML 解析
 pip install faster-whisper  # 如果要本机语音转文字
+pip install fastapi uvicorn # 如果要启动 HTTP 语音网关
 ```
 
 ## 环境变量
@@ -74,6 +75,19 @@ python3 src/loop.py
 启动后：
 - 直接在终端输入就是 CLI 通道对话
 - 若配置了 `TELEGRAM_BOT_TOKEN`，会自动启动 Telegram 轮询线程
+
+## HTTP 语音网关
+
+如果已有前端能把语音转成文本，可以把文本发到这个 HTTP 网关。它会复用真正的 `AgentGateway`，因此支持 `bash`、文件工具和 skills。
+
+```bash
+python3 src/voice_server.py 8765
+```
+
+接口：
+- `POST /chat`：请求体 `{"message": "你好", "session_id": "voice-user"}`
+- `POST /reset`：清空语音网关会话记忆
+- `GET /health`：健康检查
 
 ## skills 使用方式
 

@@ -16,3 +16,6 @@ class SessionMemory:
 
     def stats(self) -> dict[str, int]:
         return {k: len(v) for k, v in self._conversations.items()}
+
+    def clear(self) -> None:
+        self._conversations.clear()
