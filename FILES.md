@@ -5,7 +5,7 @@
 ## 根目录
 
 - `README.md`：项目介绍、依赖安装、环境变量、启动方式和常见问题。
-- `Makefile`：常用命令入口，包含 `make run`、`make voice`、`make test`、`make check`。
+- `Makefile`：常用命令入口，包含 `make run`、`make test`、`make check`。
 - `.gitignore`：忽略本地环境变量、缓存、虚拟环境和实验目录。
 - `channel.py`：早期通道功能模板，保留作参考。
 - `skills.py`：早期 skills 加载模板，保留作参考。
@@ -18,7 +18,6 @@
 - `src/memory.py`：会话记忆和用户资料追加逻辑。
 - `src/skills_runtime.py`：扫描 `~/skills`，解析 `SKILL.md`，按需加载 skill 正文。
 - `src/voice_pipeline.py`：Telegram/飞书语音文件下载后统一转写，默认使用本机 `faster-whisper`。
-- `src/voice_server.py`：HTTP 语音网关，把外部语音前端转好的文本接入真正的 `AgentGateway`。
 
 ## `tests/`
 
@@ -29,7 +28,7 @@
 ## 运行时目录
 
 - `~/.companyclaw/SYSTEM.md`：基础系统提示词。
-- `~/.companyclaw/USER_PROFILE.md`：用户长期资料，`append_user_note` 和 `update_soul` 会追加到这里。
+- `~/.companyclaw/USER_PROFILE.md`：用户长期资料，`append_user_note` 会追加到这里；需要更新旧内容时用 `read_file` 加 `edit_file`。
 - `~/.companyclaw/.state/telegram/`：Telegram offset 状态，避免重复消费旧消息。
 - `~/.companyclaw/media/voice/`：Telegram/飞书语音文件下载缓存。
 - `~/skills/`：持久化 skills 目录，每个技能通常是 `~/skills/<name>/SKILL.md`。
