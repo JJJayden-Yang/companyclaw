@@ -142,9 +142,9 @@ class AgentGateway:
         self.print_tool("load_skill", name)
         return self.skill_store.load(name.strip())
 
-    def tool_append_user_note(self, note: str) -> str:
-        self.print_tool("append_user_note", note[:80])
-        return self.user_profile.append_note(note)
+    def tool_update_user_profile(self, old_string: str, new_string: str) -> str:
+        self.print_tool("update_user_profile", f"replace {len(old_string)} chars")
+        return self.user_profile.update(old_string, new_string)
 
     def _build_tools(self) -> list[dict]:
         return [
@@ -162,8 +162,8 @@ class AgentGateway:
              "input_schema": {"type": "object", "properties": {}, "required": []}},
             {"name": "load_skill", "description": "Load a skill body by name from ~/skills.",
              "input_schema": {"type": "object", "properties": {"name": {"type": "string"}}, "required": ["name"]}},
-            {"name": "append_user_note", "description": "Append one durable observation to ~/.companyclaw/USER_PROFILE.md.",
-             "input_schema": {"type": "object", "properties": {"note": {"type": "string"}}, "required": ["note"]}},
+            {"name": "update_user_profile", "description": "Update ~/.companyclaw/USER_PROFILE.md by replacing one exact old_string with new_string. Use this for durable observations about user preferences, habits, and long-term context.",
+             "input_schema": {"type": "object", "properties": {"old_string": {"type": "string"}, "new_string": {"type": "string"}}, "required": ["old_string", "new_string"]}},
         ]
 
     def _build_tool_handlers(self) -> dict[str, Any]:
@@ -175,7 +175,7 @@ class AgentGateway:
             "list_skills": lambda **_: self.tool_list_skills(),
             "reload_skills": lambda **_: self.tool_reload_skills(),
             "load_skill": self.tool_load_skill,
-            "append_user_note": self.tool_append_user_note,
+            "update_user_profile": self.tool_update_user_profile,
         }
 
     def process_tool_call(self, tool_name: str, tool_input: dict) -> str:

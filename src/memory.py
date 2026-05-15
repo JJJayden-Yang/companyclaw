@@ -25,16 +25,16 @@ class UserProfileMemory:
     def __init__(self, profile_path) -> None:
         self.profile_path = profile_path
 
-    def append_note(self, note: str) -> str:
-        cleaned = note.strip()
-        if not cleaned:
-            return "Error: note is empty"
-        self.profile_path.parent.mkdir(parents=True, exist_ok=True)
-        if self.profile_path.exists():
-            current = self.profile_path.read_text(encoding="utf-8")
-        else:
-            current = "# 用户资料\n"
-        prefix = "" if current.endswith("\n") else "\n"
-        entry = f"{prefix}- {cleaned}\n"
-        self.profile_path.write_text(current + entry, encoding="utf-8")
-        return f"已追加到用户资料: {cleaned[:80]}"
+    def update(self, old_string: str, new_string: str) -> str:
+        if not old_string:
+            return "Error: old_string is empty"
+        if not self.profile_path.exists():
+            return "Error: USER_PROFILE.md not found"
+        content = self.profile_path.read_text(encoding="utf-8")
+        count = content.count(old_string)
+        if count == 0:
+            return "Error: old_string not found in USER_PROFILE.md. Make sure it matches exactly."
+        if count > 1:
+            return f"Error: old_string found {count} times in USER_PROFILE.md. It must be unique."
+        self.profile_path.write_text(content.replace(old_string, new_string, 1), encoding="utf-8")
+        return "已更新用户资料"
